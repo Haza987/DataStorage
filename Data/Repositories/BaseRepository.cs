@@ -1,5 +1,6 @@
 ﻿using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Linq.Expressions;
 
 namespace Data.Repositories;
@@ -9,33 +10,73 @@ public class BaseRepository<TEntity>(DbContext context) : IBaseRepository<TEntit
     protected readonly DbContext _context = context;
     protected readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
 
-    public Task<bool> AddAsync(TEntity entity)
+    public async Task<bool> AddAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            await _dbSet.AddAsync(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
     }
 
-    public Task<IEnumerable<TEntity>?> GetAllAsync()
+    public async Task<IEnumerable<TEntity>?> GetAllAsync()
     {
-        throw new NotImplementedException();
+        var entities = await _dbSet.ToListAsync();
+        return entities;
     }
 
-    public Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression)
+    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression)
     {
-        throw new NotImplementedException();
+        var entity = await _dbSet.SingleOrDefaultAsync(expression);
+        return entity;
     }
 
-    public Task<bool> UpdateAsync(TEntity entity)
+    public async Task<bool> UpdateAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _dbSet.Update(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
     }
 
-    public Task<bool> DeleteAsync(TEntity entity)
+    public async Task<bool> DeleteAsync(TEntity entity)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _dbSet.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
     }
 
-    public Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression)
+    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression)
     {
-        throw new NotImplementedException();
+        try
+        {
+            return await _dbSet.AnyAsync(expression);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
     }
 }
