@@ -16,7 +16,7 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
     private string GetCacheKey(string methodName, object? key = null) =>
         $"{typeof(TEntity).Name}_{methodName}_{key}";
 
-    public async Task<bool> AddAsync(TEntity entity)
+    public async Task<bool> CreateAsync(TEntity entity)
     {
         try
         {
