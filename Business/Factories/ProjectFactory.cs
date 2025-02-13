@@ -6,7 +6,7 @@ namespace Business.Factories;
 
 public class ProjectFactory
 {
-    public static ProjectEntity Create(ProjectDto projectDto) => new()
+    public static ProjectEntity CreateEntity(ProjectDto projectDto) => new()
     {
         ProjectName = projectDto.ProjectName,
         StartDate = projectDto.StartDate,
@@ -18,7 +18,7 @@ public class ProjectFactory
         ServiceId = projectDto.ServiceId
     };
 
-    public static Project Create(ProjectEntity projectEntity) => new()
+    public static Project CreateModel(ProjectEntity projectEntity) => new()
     {
         ProjectName = projectEntity.ProjectName,
         StartDate = projectEntity.StartDate,

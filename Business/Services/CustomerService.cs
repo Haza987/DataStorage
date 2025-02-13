@@ -1,7 +1,9 @@
-﻿using Business.Interfaces;
-using Data.Entities;
+﻿using Business.Dtos;
+using Business.Factories;
+using Business.Interfaces;
+using Business.Models;
 using Data.Interfaces;
-using System.Linq.Expressions;
+using System.Diagnostics;
 
 namespace Business.Services;
 
@@ -9,33 +11,88 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 {
     private readonly ICustomerRepository _customerRepository = customerRepository;
 
-    public async Task<bool> CreateCustomerAsync(CustomerEntity customer)
+    // Create Customer
+    public async Task<bool> CreateCustomerAsync(CustomerDto customer)
     {
-        return await _customerRepository.CreateAsync(customer);
+        try
+        {
+            if (await _customerRepository.ExistsAsync(x => x.FirstName == customer.FirstName && x.LastName == customer.LastName))
+            {
+                Debug.WriteLine("Customer name already exists");
+                return false;
+            }
+
+            var customerEntity = CustomerFactory.CreateEntity(customer);
+
+            var result = await _customerRepository.CreateAsync(customerEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            return false;
+        }
     }
 
-    public async Task<IEnumerable<CustomerEntity>?> GetAllCustomersAsync()
+    // Read all customers
+    public async Task<IEnumerable<Customer>?> GetAllCustomersAsync()
     {
-        return await _customerRepository.GetAllAsync();
+        var customerEntities = await _customerRepository.GetAllAsync();
+        var customers = customerEntities?.Select(CustomerFactory.CreateModel);
+        return customers;
     }
 
-    public async Task<CustomerEntity?> GetCustomerAsync(Expression<Func<CustomerEntity, bool>> expression)
+    // Read one customer
+    public async Task<Customer?> GetCustomerByIdAsync(int id)
     {
-        return await _customerRepository.GetAsync(expression);
+        var customerEntity = await _customerRepository.GetAsync(x => x.Id == id);
+
+        if (customerEntity == null)
+        {
+            Debug.WriteLine("Customer not found");
+            return null;
+        }
+
+        var customer = CustomerFactory.CreateModel(customerEntity);
+        return customer;
     }
 
-    public async Task<bool> UpdateCustomerAsync(CustomerEntity customer)
+    // Update customer
+    public async Task<bool> UpdateCustomerAsync(int id, CustomerUpdateDto updateDto)
     {
-        return await _customerRepository.UpdateAsync(customer);
+        var customerEntity = await _customerRepository.GetAsync(x => x.Id == id);
+
+        if (customerEntity == null)
+        {
+            Debug.WriteLine("Customer not found");
+            return false;
+        }
+
+        try
+        {
+            customerEntity = CustomerFactory.Update(customerEntity, updateDto);
+            var result = await _customerRepository.UpdateAsync(customerEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine($"Failed to update customer {ex.Message}");
+            return false;
+        }
     }
 
-    public async Task<bool> DeleteCustomerAsync(CustomerEntity customer)
+    // Delete customer
+    public async Task<bool> DeleteCustomerAsync(int id)
     {
-        return await _customerRepository.DeleteAsync(customer);
-    }
+        var customerEntity = await _customerRepository.GetAsync(x => x.Id == id);
 
-    public async Task<bool> CustomerExistsAsync(Expression<Func<CustomerEntity, bool>> expression)
-    {
-        return await _customerRepository.ExistsAsync(expression);
+        if (customerEntity == null)
+        {
+            Debug.WriteLine("Customer not found");
+            return false;
+        }
+
+        var result = await _customerRepository.DeleteAsync(customerEntity);
+        return result;
     }
 }

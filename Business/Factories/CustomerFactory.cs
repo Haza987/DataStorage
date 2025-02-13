@@ -6,7 +6,7 @@ namespace Business.Factories;
 
 public class CustomerFactory
 {
-    public static CustomerEntity Create(CustomerDto customerDto) => new()
+    public static CustomerEntity CreateEntity(CustomerDto customerDto) => new()
     {
         FirstName = customerDto.FirstName,
         LastName = customerDto.LastName,
@@ -14,7 +14,7 @@ public class CustomerFactory
         PhoneNumber = customerDto.PhoneNumber
     };
 
-    public static Customer Create(CustomerEntity customerEntity) => new()
+    public static Customer CreateModel(CustomerEntity customerEntity) => new()
     {
         CustomerName = $"{customerEntity.FirstName} {customerEntity.LastName}",
         Email = customerEntity.Email,
