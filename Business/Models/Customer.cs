@@ -1,0 +1,9 @@
+﻿namespace Business.Models;
+
+public class Customer
+{
+    public string CustomerName { get; set; } = null!;
+    public string Email { get; set; } = null!;
+    public string Address { get; set; } = null!;
+    public string PhoneNumber { get; set; } = null!;
+}
