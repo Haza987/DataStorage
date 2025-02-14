@@ -3,7 +3,7 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
-using System.Diagnostics;
+using System.ComponentModel.DataAnnotations;
 
 namespace Business.Services;
 
@@ -18,18 +18,32 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         {
             if(await _projectRepository.ExistsAsync(x => x.ProjectName == project.ProjectName))
             {
-                Debug.WriteLine("Project name already exists");
+                Console.WriteLine("Project name already exists");
                 return false;
             }
 
-            var projectEntity = ProjectFactory.CreateEntity(project);
+            // This get the last project number
+            var highestPN = await _projectRepository.GetAllAsync();
+            var lastPN = highestPN!
+                .Select(x => int.Parse(x.ProjectNumber.Substring(2)))
+                .DefaultIfEmpty(100)
+                .Max();
 
+            // This increments and formats the project number
+            var nextPN = lastPN + 1;
+            var newPN = $"P-{nextPN}";
+
+            // This creates the new project entity with the new project number
+            var projectEntity = ProjectFactory.CreateEntity(project);
+            projectEntity.ProjectNumber = newPN;
+
+            // This saves the project. 
             var result = await _projectRepository.CreateAsync(projectEntity);
             return result;
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+            Console.WriteLine($"Failed to create project {ex.Message}");
             return false;
         }
     }
@@ -49,7 +63,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 
         if (projectEntity == null)
         {
-            Debug.WriteLine("Project not found");
+            Console.WriteLine("Project not found");
             return null;
         }
 
@@ -64,7 +78,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 
         if (projectEntity == null)
         {
-            Debug.WriteLine("Project not found");
+            Console.WriteLine("Project not found");
             return false;
         }
 
@@ -76,7 +90,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to update project {ex.Message}");
+            Console.WriteLine($"Failed to update project {ex.Message}");
             return false;
         }
     }
@@ -88,11 +102,19 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 
         if (projectEntity == null)
         {
-            Debug.WriteLine("Project not found");
+            Console.WriteLine("Project not found");
             return false;
         }
 
-        var result = await _projectRepository.DeleteAsync(projectEntity);
-        return result;
+        try
+        {
+            var result = await _projectRepository.DeleteAsync(projectEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to delete project {ex.Message}");
+            return false;
+        }
     }
 }

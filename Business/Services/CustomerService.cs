@@ -3,7 +3,6 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
-using System.Diagnostics;
 
 namespace Business.Services;
 
@@ -18,7 +17,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         {
             if (await _customerRepository.ExistsAsync(x => x.FirstName == customer.FirstName && x.LastName == customer.LastName))
             {
-                Debug.WriteLine("Customer name already exists");
+                Console.WriteLine("Customer name already exists");
                 return false;
             }
 
@@ -29,7 +28,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+            Console.WriteLine($"Failed to create customer {ex.Message}");
             return false;
         }
     }
@@ -49,7 +48,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 
         if (customerEntity == null)
         {
-            Debug.WriteLine("Customer not found");
+            Console.WriteLine("Customer not found");
             return null;
         }
 
@@ -64,7 +63,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 
         if (customerEntity == null)
         {
-            Debug.WriteLine("Customer not found");
+            Console.WriteLine("Customer not found");
             return false;
         }
 
@@ -76,7 +75,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         }
         catch (Exception ex)
         {
-            Debug.WriteLine($"Failed to update customer {ex.Message}");
+            Console.WriteLine($"Failed to update customer {ex.Message}");
             return false;
         }
     }
@@ -88,11 +87,19 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
 
         if (customerEntity == null)
         {
-            Debug.WriteLine("Customer not found");
+            Console.WriteLine("Customer not found");
             return false;
         }
 
-        var result = await _customerRepository.DeleteAsync(customerEntity);
-        return result;
+        try
+        {
+            var result = await _customerRepository.DeleteAsync(customerEntity);
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Failed to delete customer {ex.Message}");
+            return false;
+        }
     }
 }
