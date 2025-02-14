@@ -1,41 +1,18 @@
-﻿using Business.Interfaces;
-using Data.Entities;
+﻿using Business.Factories;
+using Business.Interfaces;
+using Business.Models;
 using Data.Interfaces;
-using System.Linq.Expressions;
 
 namespace Business.Services;
 
-public class ProjectManagerService(IProjectManagerRepository ProjectManagerRepository) : IProjectManagerService
+public class ProjectManagerService(IProjectManagerRepository projectManagerRepository) : IProjectManagerService
 {
-    private readonly IProjectManagerRepository _projectManagerRepository = ProjectManagerRepository;
+    private readonly IProjectManagerRepository _projectManagerRepository = projectManagerRepository;
 
-    public async Task<bool> CreateProjectManagerAsync(ProjectManagerEntity projectManager)
+    public async Task<IEnumerable<ProjectManager>?> GetAllProjectManagersAsync()
     {
-        return await _projectManagerRepository.CreateAsync(projectManager);
-    }
-
-    public async Task<IEnumerable<ProjectManagerEntity>?> GetAllProjectManagersAsync()
-    {
-        return await _projectManagerRepository.GetAllAsync();
-    }
-
-    public async Task<ProjectManagerEntity?> GetProjectManagerAsync(Expression<Func<ProjectManagerEntity, bool>> expression)
-    {
-        return await _projectManagerRepository.GetAsync(expression);
-    }
-
-    public async Task<bool> UpdateProjectManagerAsync(ProjectManagerEntity projectManager)
-    {
-        return await _projectManagerRepository.UpdateAsync(projectManager);
-    }
-
-    public async Task<bool> DeleteProjectManagerAsync(ProjectManagerEntity projectManager)
-    {
-        return await _projectManagerRepository.DeleteAsync(projectManager);
-    }
-
-    public async Task<bool> ProjectManagerExistsAsync(Expression<Func<ProjectManagerEntity, bool>> expression)
-    {
-        return await _projectManagerRepository.ExistsAsync(expression);
+        var projectEntities = await _projectManagerRepository.GetAllAsync();
+        var projects = projectEntities?.Select(ProjectManagerFactory.CreateModel);
+        return projects;
     }
 }
