@@ -25,9 +25,9 @@ public class ProjectFactory
         EndDate = projectEntity.EndDate,
         Status = projectEntity.Status,
         TotalPrice = projectEntity.TotalPrice,
-        CustomerName = $"{projectEntity.Customer.FirstName} {projectEntity.Customer.LastName}",
-        ProjectManagerName = $"{projectEntity.ProjectManager.FirstName} {projectEntity.ProjectManager.LastName}",
-        ServiceName = projectEntity.Service.ServiceName
+        CustomerId = projectEntity.ProjectManagerId,
+        ProjectManagerId = projectEntity.ProjectManagerId,
+        ServiceId = projectEntity.ServiceId
     };
 
     // GitHub Copilot helped me with this method so that the user can update the fields if they want to.

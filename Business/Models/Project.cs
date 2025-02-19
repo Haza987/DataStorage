@@ -8,7 +8,7 @@ public class Project
     public DateTime EndDate { get; set; }
     public string Status { get; set; } = null!;
     public decimal TotalPrice { get; set; }
-    public string CustomerName { get; set; } = null!;
-    public string ProjectManagerName { get; set; } = null!;
-    public string ServiceName { get; set; } = null!;
+    public int CustomerId { get; set; }
+    public int ProjectManagerId { get; set; }
+    public int ServiceId { get; set; }
 }

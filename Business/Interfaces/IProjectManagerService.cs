@@ -5,5 +5,6 @@ namespace Business.Interfaces
     public interface IProjectManagerService
     {
         Task<IEnumerable<ProjectManager>?> GetAllProjectManagersAsync();
+        Task<ProjectManager?> GetProjectManagerByIdAsync(int id);
     }
 }

@@ -16,7 +16,8 @@ public class CustomerFactory
 
     public static Customer CreateModel(CustomerEntity customerEntity) => new()
     {
-        CustomerName = $"{customerEntity.FirstName} {customerEntity.LastName}",
+        FirstName =customerEntity.FirstName,
+        LastName = customerEntity.LastName,
         Email = customerEntity.Email,
         PhoneNumber = customerEntity.PhoneNumber,
         Address = customerEntity.Address
