@@ -53,6 +53,7 @@ public class ViewAllProjects(IProjectService projectService, ICustomerService cu
                 Console.WriteLine($"Service ID: {project.ServiceId}");
                 Console.WriteLine($"Service Name: {service?.ServiceName}");
             }
+            Console.ReadKey();
         }
         else
         {

@@ -9,7 +9,7 @@ public class ViewChoiceDialogue(ViewAllProjects viewAllProjects, ViewAllCustomer
     private readonly ViewProjectByNumberDialogue _viewProjectByNumberDialogue = ViewProjectByNumberDialogue;
     private readonly ViewCustomerByIdDialogue _viewCustomerByIdDialogue = viewCustomerByIdDialogue;
 
-    public async void ViewChoice()
+    public async Task ViewChoice()
     {
         Console.Clear();
         Console.WriteLine("---------- VIEW CHOICES ----------");

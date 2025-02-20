@@ -40,7 +40,7 @@ public class ViewAllCustomers(ICustomerService customerService)
         else
         {
             Console.WriteLine("No customers found. Press any key to continue");
-            Console.ReadKey();
         }
+        Console.ReadKey();
     }
 }

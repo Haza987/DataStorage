@@ -40,16 +40,16 @@ public class MainMenuService(
                     break;
 
                 case "3":
-                    _viewChoiceDialogue.ViewChoice();
+                    await _viewChoiceDialogue.ViewChoice();
                     break;
 
                 case "4":
-                    _editDeleteChoiceDialogue.EditOrDelete();
+                    await _editDeleteChoiceDialogue.EditOrDelete();
                     break;
 
                 case "5":
                     _exitDialogue.ExitApp();
-                    break;
+                    return;
 
                 default:
                     Console.WriteLine("Invalid option. Press any key to try again.");

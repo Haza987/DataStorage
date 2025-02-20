@@ -20,6 +20,7 @@ public class ProjectFactory
 
     public static Project CreateModel(ProjectEntity projectEntity) => new()
     {
+        ProjectNumber = projectEntity.ProjectNumber,
         ProjectName = projectEntity.ProjectName,
         StartDate = projectEntity.StartDate,
         EndDate = projectEntity.EndDate,

@@ -8,60 +8,77 @@ public class FindCustomerEditDialogue
     private readonly EditCustomerDialogue _editDialogue;
     private readonly DeleteDialogue _deleteDialogue;
 
+    public FindCustomerEditDialogue(ICustomerService customerService, EditCustomerDialogue editDialogue, DeleteDialogue deleteDialogue)
+    {
+        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
+        _editDialogue = editDialogue ?? throw new ArgumentNullException(nameof(editDialogue));
+        _deleteDialogue = deleteDialogue ?? throw new ArgumentNullException(nameof(deleteDialogue));
+    }
+
     public async Task FindCustomer(bool isEdit)
     {
-        Console.Clear();
-        Console.WriteLine("---------- FIND CUSTOMER TO EDIT ----------");
-        Console.WriteLine("Enter the customer's ID:");
-        var input = Console.ReadLine()!;
-
-        if (int.TryParse(input, out var customerId))
+        while (true)
         {
-            var customer = await _customerService.GetCustomerByIdAsync(customerId);
-            if (customer != null)
+            Console.Clear();
+            Console.WriteLine("---------- FIND CUSTOMER TO EDIT ----------");
+
+            Console.WriteLine("Enter the customer's ID (Or type M to return to the main menu):");
+            var input = Console.ReadLine()!;
+
+            if (input.ToUpper() == "M")
             {
-                Console.WriteLine($"Customer found: {customer.FirstName} {customer.LastName}");
-                Console.WriteLine("Is this the customer you are trying to edit? (Y/N)");
-                var option = Console.ReadLine()!;
+                return;
+            }
 
-                switch (option.ToUpper())
+            if (int.TryParse(input, out var customerId))
+            {
+                var customer = await _customerService.GetCustomerByIdAsync(customerId);
+                if (customer != null)
                 {
-                    case "Y":
-                        if (isEdit)
-                        {
-                            await _editDialogue.EditCustomer(customer);
-                        }
-                        else
-                        {
-                            await _deleteDialogue.DeleteCustomer(customer);
-                        }
-                        break;
+                    Console.Clear();
+                    Console.WriteLine($"Customer found: {customer.FirstName} {customer.LastName}");
+                    Console.WriteLine("Is this the customer you are trying to edit? (Y/N)");
+                    var option = Console.ReadLine()!;
 
-                    case "N":
-                        Console.Clear();
-                        Console.WriteLine("---------- LOADING ----------");
-                        Console.WriteLine("Returning to customer finder...");
-                        Console.ReadKey();
-                        break;
+                    switch (option.ToUpper())
+                    {
+                        case "Y":
+                            if (isEdit)
+                            {
+                                await _editDialogue.EditCustomer(customer);
+                            }
+                            else
+                            {
+                                await _deleteDialogue.DeleteCustomer(customer);
+                            }
+                            return;
 
-                    default:
-                        Console.Clear();
-                        Console.WriteLine("---------- ERROR ----------");
-                        Console.WriteLine("Invalid option. Please try again.");
-                        Console.ReadKey();
-                        break;
+                        case "N":
+                            Console.Clear();
+                            Console.WriteLine("---------- LOADING ----------");
+                            Console.WriteLine("Returning to customer finder...");
+                            Console.ReadKey();
+                            break;
+
+                        default:
+                            Console.Clear();
+                            Console.WriteLine("---------- ERROR ----------");
+                            Console.WriteLine("Invalid option. Please try again.");
+                            Console.ReadKey();
+                            break;
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Customer not found.");
+                    Console.ReadKey();
                 }
             }
             else
             {
-                Console.WriteLine("Customer not found.");
+                Console.WriteLine("Invalid input.");
                 Console.ReadKey();
             }
-        }
-        else
-        {
-            Console.WriteLine("Invalid input.");
-            Console.ReadKey();
         }
     }
 }

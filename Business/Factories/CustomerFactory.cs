@@ -11,11 +11,13 @@ public class CustomerFactory
         FirstName = customerDto.FirstName,
         LastName = customerDto.LastName,
         Email = customerDto.Email,
-        PhoneNumber = customerDto.PhoneNumber
+        PhoneNumber = customerDto.PhoneNumber,
+        Address = customerDto.Address
     };
 
     public static Customer CreateModel(CustomerEntity customerEntity) => new()
     {
+        Id = customerEntity.Id,
         FirstName =customerEntity.FirstName,
         LastName = customerEntity.LastName,
         Email = customerEntity.Email,

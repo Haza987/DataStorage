@@ -1,6 +1,5 @@
 ﻿using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -24,12 +23,11 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
             await _context.SaveChangesAsync();
 
             _cache.Remove(GetCacheKey(nameof(GetAllAsync)));
-            _cache.Remove(GetCacheKey(nameof(GetAsync), entity));
             return true;
         }
         catch (Exception ex)
         {
-            Debug.WriteLine(ex.Message);
+            Debug.WriteLine($"Exception: {ex.Message}");
             return false;
         }
     }
@@ -52,17 +50,8 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
 
     public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression)
     {
-        var cacheKey = GetCacheKey(nameof(GetAsync), expression);
-
-        if (_cache.TryGetValue(cacheKey, out TEntity? cachedEntity))
-        {
-            return cachedEntity;
-        }
-
         var entity = await _dbSet.SingleOrDefaultAsync(expression);
-
-        _cache.Set(cacheKey, entity, TimeSpan.FromMinutes(2));
-
+        Debug.WriteLine(entity != null ? "Entity found in database" : "Entity not found in database");
         return entity;
     }
 
@@ -73,7 +62,6 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
             _dbSet.Update(entity);
             await _context.SaveChangesAsync();
             _cache.Remove(GetCacheKey(nameof(GetAllAsync)));
-            _cache.Remove(GetCacheKey(nameof(GetAsync), entity));
             return true;
         }
         catch (Exception ex)
@@ -90,7 +78,6 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
             _dbSet.Remove(entity);
             await _context.SaveChangesAsync();
             _cache.Remove(GetCacheKey(nameof(GetAllAsync)));
-            _cache.Remove(GetCacheKey(nameof(GetAsync), entity));
             return true;
         }
         catch (Exception ex)

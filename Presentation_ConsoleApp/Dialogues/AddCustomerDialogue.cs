@@ -1,6 +1,7 @@
 ﻿using Business.Dtos;
 using Business.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 using System.Net;
 
 namespace Presentation_ConsoleApp.Dialogues;
@@ -31,37 +32,15 @@ public class AddCustomerDialogue(ICustomerService customerService)
         Console.Write("Enter your street address: ");
         customer.Address = Console.ReadLine()!;
 
-        var customerDto = new CustomerDto
-        {
-            FirstName = customer.FirstName,
-            LastName = customer.LastName,
-            Email = customer.Email,
-            PhoneNumber = customer.PhoneNumber,
-            Address = customer.Address
-        };
-
         var result = await _customerService.CreateCustomerAsync(customer);
 
-        try
+        if (result)
         {
-            if (result)
-            {
-                Console.WriteLine("Customer added successfully!");
-            }
-            else
-            {
-                Console.WriteLine("Failed to add customer.");
-            }
+            Console.WriteLine("Customer added successfully!");
         }
-        catch (DbUpdateException ex)
+        else
         {
-            Console.WriteLine("An error occurred while saving the entity changes. See the inner exception for details.");
-            Console.WriteLine(ex.InnerException?.Message);
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine("An unexpected error occurred.");
-            Console.WriteLine(ex.Message);
+            Console.WriteLine("Failed to add customer.");
         }
 
         Console.WriteLine("Press any key to return to the main menu.");

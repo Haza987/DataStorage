@@ -11,9 +11,9 @@ public class DeleteDialogue(ICustomerService customerService, IProjectService pr
     public async Task DeleteCustomer(Customer customer)
     {
         Console.Clear();
-        Console.WriteLine("---------- DELETE CONTACT ----------");
+        Console.WriteLine("---------- DELETE CUSTOMER ----------");
         Console.WriteLine($"Customer: {customer.FirstName} {customer.LastName}");
-        Console.WriteLine("Are you sure you want to delete this contact? (Y/N)");
+        Console.WriteLine("Are you sure you want to delete this customer? (Y/N)");
         var option = Console.ReadLine()!;
 
         switch (option.ToUpper())
@@ -21,7 +21,7 @@ public class DeleteDialogue(ICustomerService customerService, IProjectService pr
             case "Y":
                 Console.Clear();
                 Console.WriteLine("-------------------------------");
-                Console.WriteLine("Contact deleted successfully. Returning to main menu...");
+                Console.WriteLine("Customer deleted successfully. Returning to main menu...");
                 await _customerService.DeleteCustomerAsync(customer.Id);
                 Console.ReadKey();
                 return;
@@ -29,7 +29,7 @@ public class DeleteDialogue(ICustomerService customerService, IProjectService pr
             case "N":
                 Console.Clear();
                 Console.WriteLine("-------------------------------");
-                Console.WriteLine("Contact not deleted. Returning to main menu...");
+                Console.WriteLine("Customer not deleted. Returning to main menu...");
                 Console.ReadKey();
                 return;
 
@@ -45,9 +45,9 @@ public class DeleteDialogue(ICustomerService customerService, IProjectService pr
     public async Task DeleteProject(Project project)
     {
         Console.Clear();
-        Console.WriteLine("---------- DELETE CONTACT ----------");
+        Console.WriteLine("---------- DELETE PROJECT ----------");
         Console.WriteLine($"Customer: {project.ProjectNumber}");
-        Console.WriteLine("Are you sure you want to delete this contact? (Y/N)");
+        Console.WriteLine("Are you sure you want to delete this project? (Y/N)");
         var option = Console.ReadLine()!;
 
         switch (option.ToUpper())
@@ -55,7 +55,7 @@ public class DeleteDialogue(ICustomerService customerService, IProjectService pr
             case "Y":
                 Console.Clear();
                 Console.WriteLine("-------------------------------");
-                Console.WriteLine("Contact deleted successfully. Returning to main menu...");
+                Console.WriteLine("Project deleted successfully. Returning to main menu...");
                 await _projectService.DeleteProjectAsync(project.ProjectNumber);
                 Console.ReadKey();
                 return;
@@ -63,7 +63,7 @@ public class DeleteDialogue(ICustomerService customerService, IProjectService pr
             case "N":
                 Console.Clear();
                 Console.WriteLine("-------------------------------");
-                Console.WriteLine("Contact not deleted. Returning to main menu...");
+                Console.WriteLine("Project not deleted. Returning to main menu...");
                 Console.ReadKey();
                 return;
 

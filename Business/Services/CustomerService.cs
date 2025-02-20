@@ -3,6 +3,7 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
+using System.Diagnostics;
 
 namespace Business.Services;
 
@@ -24,6 +25,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
             var customerEntity = CustomerFactory.CreateEntity(customer);
 
             var result = await _customerRepository.CreateAsync(customerEntity);
+
             return result;
         }
         catch (Exception ex)
