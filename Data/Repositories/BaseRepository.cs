@@ -1,5 +1,6 @@
 ﻿using Data.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Caching.Memory;
 using System.Diagnostics;
 using System.Linq.Expressions;
@@ -11,9 +12,44 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
     protected readonly DbContext _context = context;
     protected readonly DbSet<TEntity> _dbSet = context.Set<TEntity>();
     protected readonly IMemoryCache _cache = cache;
+    private IDbContextTransaction _transaction = null!;
 
     private string GetCacheKey(string methodName, object? key = null) =>
         $"{typeof(TEntity).Name}_{methodName}_{key}";
+
+    #region Transaction management
+
+    public virtual async Task BeginTransactionAsync()
+    {
+        if (_transaction == null)
+        {
+            _transaction = await _context.Database.BeginTransactionAsync();
+        }
+    }
+
+    public virtual async Task CommitTransactionAsync()
+    {
+        if (_transaction != null)
+        {
+            await _transaction.CommitAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null!;
+        }
+    }
+
+    public virtual async Task RollbackTransactionAsync()
+    {
+        if (_transaction != null)
+        {
+            await _transaction.RollbackAsync();
+            await _transaction.DisposeAsync();
+            _transaction = null!;
+        }
+    }
+
+    #endregion
+
+    #region CRUD Operations
 
     public async Task<bool> CreateAsync(TEntity entity)
     {
@@ -32,7 +68,7 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
         }
     }
 
-    public async Task<IEnumerable<TEntity>?> GetAllAsync()
+    public virtual async Task<IEnumerable<TEntity>?> GetAllAsync()
     {
         var cacheKey = GetCacheKey(nameof(GetAllAsync));
 
@@ -48,14 +84,14 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
         return entities;
     }
 
-    public async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual async Task<TEntity?> GetAsync(Expression<Func<TEntity, bool>> expression)
     {
         var entity = await _dbSet.SingleOrDefaultAsync(expression);
         Debug.WriteLine(entity != null ? "Entity found in database" : "Entity not found in database");
         return entity;
     }
 
-    public async Task<bool> UpdateAsync(TEntity entity)
+    public virtual async Task<bool> UpdateAsync(TEntity entity)
     {
         try
         {
@@ -71,7 +107,7 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
         }
     }
 
-    public async Task<bool> DeleteAsync(TEntity entity)
+    public virtual async Task<bool> DeleteAsync(TEntity entity)
     {
         try
         {
@@ -87,7 +123,7 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
         }
     }
 
-    public async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression)
+    public virtual async Task<bool> ExistsAsync(Expression<Func<TEntity, bool>> expression)
     {
         try
         {
@@ -99,4 +135,6 @@ public class BaseRepository<TEntity>(DbContext context, IMemoryCache cache) : IB
             return false;
         }
     }
+
+    #endregion
 }

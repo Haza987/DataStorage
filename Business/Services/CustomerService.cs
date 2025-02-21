@@ -3,7 +3,6 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
-using System.Diagnostics;
 
 namespace Business.Services;
 
@@ -14,6 +13,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     // Create Customer
     public async Task<bool> CreateCustomerAsync(CustomerDto customer)
     {
+        await _customerRepository.BeginTransactionAsync();
         try
         {
             if (await _customerRepository.ExistsAsync(x => x.FirstName == customer.FirstName && x.LastName == customer.LastName))
@@ -25,12 +25,13 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
             var customerEntity = CustomerFactory.CreateEntity(customer);
 
             var result = await _customerRepository.CreateAsync(customerEntity);
-
+            await _customerRepository.CommitTransactionAsync();
             return result;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to create customer {ex.Message}");
+            await _customerRepository.RollbackTransactionAsync();
             return false;
         }
     }
@@ -61,6 +62,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     // Update customer
     public async Task<bool> UpdateCustomerAsync(int id, CustomerUpdateDto updateDto)
     {
+        await _customerRepository.BeginTransactionAsync();
         var customerEntity = await _customerRepository.GetAsync(x => x.Id == id);
 
         if (customerEntity == null)
@@ -73,11 +75,13 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         {
             customerEntity = CustomerFactory.Update(customerEntity, updateDto);
             var result = await _customerRepository.UpdateAsync(customerEntity);
+            await _customerRepository.CommitTransactionAsync();
             return result;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to update customer {ex.Message}");
+            await _customerRepository.RollbackTransactionAsync();
             return false;
         }
     }
@@ -85,6 +89,7 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
     // Delete customer
     public async Task<bool> DeleteCustomerAsync(int id)
     {
+        await _customerRepository.BeginTransactionAsync();
         var customerEntity = await _customerRepository.GetAsync(x => x.Id == id);
 
         if (customerEntity == null)
@@ -96,11 +101,13 @@ public class CustomerService(ICustomerRepository customerRepository) : ICustomer
         try
         {
             var result = await _customerRepository.DeleteAsync(customerEntity);
+            await _customerRepository.CommitTransactionAsync();
             return result;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to delete customer {ex.Message}");
+            await _customerRepository.RollbackTransactionAsync();
             return false;
         }
     }

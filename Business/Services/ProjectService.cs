@@ -3,17 +3,17 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
-using System.Diagnostics;
 
 namespace Business.Services;
 
 public class ProjectService(IProjectRepository projectRepository) : IProjectService
 {
     private readonly IProjectRepository _projectRepository = projectRepository;
-
+    
     // Create project
     public async Task<bool> CreateProjectAsync(ProjectDto project)
     {
+        await _projectRepository.BeginTransactionAsync();
         try
         {
             if(await _projectRepository.ExistsAsync(x => x.ProjectName == project.ProjectName))
@@ -39,11 +39,13 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
 
             // This saves the project. 
             var result = await _projectRepository.CreateAsync(projectEntity);
+            await _projectRepository.CommitTransactionAsync();
             return result;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to create project {ex.Message}");
+            await _projectRepository.RollbackTransactionAsync();
             return false;
         }
     }
@@ -51,27 +53,8 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
     // Read all projects
     public async Task<IEnumerable<Project>?> GetAllProjectsAsync()
     {
-        Debug.WriteLine("GetAllProjectsAsync called");
         var projectEntities = await _projectRepository.GetAllAsync();
-        if (projectEntities == null)
-        {
-            Debug.WriteLine("No project entities found in the database");
-            return null;
-        }
-
-        Debug.WriteLine($"Number of project entities retrieved: {projectEntities.Count()}");
-        foreach (var projectEntity in projectEntities)
-        {
-            Debug.WriteLine($"ProjectEntity: {projectEntity.ProjectNumber}, CustomerId: {projectEntity.CustomerId}");
-        }
-
-        var projects = projectEntities.Select(ProjectFactory.CreateModel);
-        Debug.WriteLine($"Number of projects created: {projects.Count()}");
-        foreach (var project in projects)
-        {
-            Debug.WriteLine($"Project: {project.ProjectNumber}, CustomerId: {project.CustomerId}");
-        }
-
+        var projects = projectEntities?.Select(ProjectFactory.CreateModel);
         return projects;
     }
 
@@ -93,6 +76,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
     // Update project
     public async Task<bool> UpdateProjectAsync(string projectNumber, ProjectUpdateDto updateDto)
     {
+        await _projectRepository.BeginTransactionAsync();
         var projectEntity = await _projectRepository.GetAsync(x => x.ProjectNumber == projectNumber);
 
         if (projectEntity == null)
@@ -105,11 +89,13 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         {
             projectEntity = ProjectFactory.Update(projectEntity, updateDto);
             var result = await _projectRepository.UpdateAsync(projectEntity);
+            await _projectRepository.CommitTransactionAsync();
             return result;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to update project {ex.Message}");
+            await _projectRepository.RollbackTransactionAsync();
             return false;
         }
     }
@@ -117,6 +103,7 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
     // Delete project
     public async Task<bool> DeleteProjectAsync(string projectNumber)
     {
+        await _projectRepository.BeginTransactionAsync();
         var projectEntity = await _projectRepository.GetAsync(x => x.ProjectNumber == projectNumber);
 
         if (projectEntity == null)
@@ -128,11 +115,13 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
         try
         {
             var result = await _projectRepository.DeleteAsync(projectEntity);
+            await _projectRepository.CommitTransactionAsync();
             return result;
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Failed to delete project {ex.Message}");
+            await _projectRepository.RollbackTransactionAsync();
             return false;
         }
     }
