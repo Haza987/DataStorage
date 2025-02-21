@@ -1,8 +1,5 @@
 ﻿using Business.Dtos;
 using Business.Interfaces;
-using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
-using System.Net;
 
 namespace Presentation_ConsoleApp.Dialogues;
 

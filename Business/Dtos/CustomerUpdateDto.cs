@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Business.Dtos;
+﻿namespace Business.Dtos;
 
 public class CustomerUpdateDto
 {
