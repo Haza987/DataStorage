@@ -2,18 +2,11 @@
 
 namespace Presentation_ConsoleApp.Dialogues;
 
-public class FindProjectEditDialogue
+public class FindProjectEditDialogue(IProjectService projectService, EditProjectDialogue editDialogue, DeleteDialogue deleteDialogue)
 {
-    private readonly IProjectService _projectService;
-    private readonly EditProjectDialogue _editDialogue;
-    private readonly DeleteDialogue _deleteDialogue;
-
-    public FindProjectEditDialogue(IProjectService projectService, EditProjectDialogue editDialogue, DeleteDialogue deleteDialogue)
-    {
-        _projectService = projectService ?? throw new ArgumentNullException(nameof(projectService));
-        _editDialogue = editDialogue ?? throw new ArgumentNullException(nameof(editDialogue));
-        _deleteDialogue = deleteDialogue ?? throw new ArgumentNullException(nameof(deleteDialogue));
-    }
+    private readonly IProjectService _projectService = projectService;
+    private readonly EditProjectDialogue _editDialogue = editDialogue;
+    private readonly DeleteDialogue _deleteDialogue = deleteDialogue;
 
     public async Task FindProject(bool isEdit)
     {
@@ -34,6 +27,8 @@ public class FindProjectEditDialogue
                 var project = await _projectService.GetProjectByNumberAsync(input);
                 if (project != null)
                 {
+                    Console.Clear();
+                    Console.WriteLine("---------- PROJECT FOUND ----------");
                     Console.WriteLine($"Project found: {project.ProjectNumber}, {project.ProjectName}");
                     Console.WriteLine("Is this the project you are trying to edit? (Y/N)");
                     var option = Console.ReadLine()!;

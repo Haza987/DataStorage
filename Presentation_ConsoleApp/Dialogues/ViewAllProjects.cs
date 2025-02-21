@@ -55,12 +55,11 @@ public class ViewAllProjects(IProjectService projectService, ICustomerService cu
                 Console.WriteLine($"Service Name: {service?.ServiceName}");
                 Console.WriteLine("-------------------------------");
             }
-            Console.ReadKey();
         }
         else
         {
             Console.WriteLine("No projects found. Press any key to continue");
-            Console.ReadKey();
         }
+            Console.ReadKey();
     }
 }

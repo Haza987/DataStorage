@@ -30,6 +30,7 @@ public class ViewAllProjectManagers(IProjectManagerService projectManagerService
         {
             foreach (var projectManager in projectManagers)
             {
+                Console.WriteLine($"Project Manager ID: {projectManager.Id}");
                 Console.WriteLine($"Project Manager Name: {projectManager.FullName}");
                 Console.WriteLine($"Project Manager Email: {projectManager.Email}");
                 Console.WriteLine($"Project Manager Phone Number: {projectManager.PhoneNumber}");
@@ -39,7 +40,7 @@ public class ViewAllProjectManagers(IProjectManagerService projectManagerService
         else
         {
             Console.WriteLine("No project managers found. Press any key to continue");
-            Console.ReadKey();
         }
+            Console.ReadKey();
     }
 }

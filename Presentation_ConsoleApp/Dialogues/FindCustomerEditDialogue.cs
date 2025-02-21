@@ -2,18 +2,11 @@
 
 namespace Presentation_ConsoleApp.Dialogues;
 
-public class FindCustomerEditDialogue
+public class FindCustomerEditDialogue(ICustomerService customerService, EditCustomerDialogue editDialogue, DeleteDialogue deleteDialogue)
 {
-    private readonly ICustomerService _customerService;
-    private readonly EditCustomerDialogue _editDialogue;
-    private readonly DeleteDialogue _deleteDialogue;
-
-    public FindCustomerEditDialogue(ICustomerService customerService, EditCustomerDialogue editDialogue, DeleteDialogue deleteDialogue)
-    {
-        _customerService = customerService ?? throw new ArgumentNullException(nameof(customerService));
-        _editDialogue = editDialogue ?? throw new ArgumentNullException(nameof(editDialogue));
-        _deleteDialogue = deleteDialogue ?? throw new ArgumentNullException(nameof(deleteDialogue));
-    }
+    private readonly ICustomerService _customerService = customerService;
+    private readonly EditCustomerDialogue _editDialogue = editDialogue;
+    private readonly DeleteDialogue _deleteDialogue = deleteDialogue;
 
     public async Task FindCustomer(bool isEdit)
     {

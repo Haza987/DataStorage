@@ -30,6 +30,7 @@ public class ViewAllServices(IServiceManager serviceManager)
         {
             foreach (var service in services)
             {
+                Console.WriteLine($"Service ID: {service.Id}");
                 Console.WriteLine($"Service name: {service.ServiceName}");
                 Console.WriteLine($"Service hourly rate: {service.HourlyRate}");
                 Console.WriteLine("-------------------------------");
@@ -38,7 +39,7 @@ public class ViewAllServices(IServiceManager serviceManager)
         else
         {
             Console.WriteLine("No services found. Press any key to continue");
-            Console.ReadKey();
         }
+            Console.ReadKey();
     }
 }
