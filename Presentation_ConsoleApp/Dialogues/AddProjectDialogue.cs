@@ -1,5 +1,6 @@
 ﻿using Business.Dtos;
 using Business.Interfaces;
+using Business.Utilities;
 
 namespace Presentation_ConsoleApp.Dialogues;
 
@@ -17,10 +18,9 @@ public class AddProjectDialogue(IProjectService projectService)
         Console.Write("Enter the name of the project: ");
         project.ProjectName = Console.ReadLine()!;
 
-        // Github Copilot suggested the code in order to parse the date correctly.
 
         Console.Write("Enter the project's start date (DD-MM-YYY): ");
-        if (DateTime.TryParseExact(Console.ReadLine(), "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime startDate))
+        if (DateParser.TryParseDate(Console.ReadLine()!, out DateTime startDate))
         {
             project.StartDate = startDate;
         }
@@ -33,7 +33,7 @@ public class AddProjectDialogue(IProjectService projectService)
 
 
         Console.Write("Enter the project's end date (DD-MM-YYY): ");
-        if (DateTime.TryParseExact(Console.ReadLine(), "dd-MM-yyyy", null, System.Globalization.DateTimeStyles.None, out DateTime endDate))
+        if (DateParser.TryParseDate(Console.ReadLine()!, out DateTime endDate))
         {
             project.EndDate = endDate;
         }
