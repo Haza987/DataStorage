@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Business", "Business\Busine
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D7F53394-1222-4012-9E5F-4195AC9F4BC4}"
 	ProjectSection(SolutionItems) = preProject
-		TextFile2.txt = TextFile2.txt
+		ReadMe.txt = ReadMe.txt
 	EndProjectSection
 EndProject
 Global
@@ -35,5 +35,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4ABF5F28-C6CE-4429-8F61-41DC4FAE2AD2}
 	EndGlobalSection
 EndGlobal
