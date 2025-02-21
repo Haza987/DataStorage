@@ -30,6 +30,7 @@ public class ViewAllProjects(IProjectService projectService, ICustomerService cu
     {
         Console.Clear();
         Console.WriteLine("----- VIEW PROJECTS -----");
+        Console.WriteLine("-------------------------------");
         if (projects.Any())
         {
             foreach (var project in projects)
@@ -52,6 +53,7 @@ public class ViewAllProjects(IProjectService projectService, ICustomerService cu
                 Console.WriteLine($"Project Manager Name: {projectManager?.FullName}");
                 Console.WriteLine($"Service ID: {project.ServiceId}");
                 Console.WriteLine($"Service Name: {service?.ServiceName}");
+                Console.WriteLine("-------------------------------");
             }
             Console.ReadKey();
         }

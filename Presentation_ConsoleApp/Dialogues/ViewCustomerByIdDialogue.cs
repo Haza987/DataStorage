@@ -29,8 +29,8 @@ public class ViewCustomerByIdDialogue(ICustomerService customerService)
             else
             {
                 Console.WriteLine("Customer not found.");
-                Console.ReadKey();
             }
+                Console.ReadKey();
         }
         else
         {

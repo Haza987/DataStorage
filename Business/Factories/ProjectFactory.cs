@@ -18,18 +18,21 @@ public class ProjectFactory
         ServiceId = projectDto.ServiceId
     };
 
-    public static Project CreateModel(ProjectEntity projectEntity) => new()
+    public static Project CreateModel(ProjectEntity projectEntity)
     {
-        ProjectNumber = projectEntity.ProjectNumber,
-        ProjectName = projectEntity.ProjectName,
-        StartDate = projectEntity.StartDate,
-        EndDate = projectEntity.EndDate,
-        Status = projectEntity.Status,
-        TotalPrice = projectEntity.TotalPrice,
-        CustomerId = projectEntity.ProjectManagerId,
-        ProjectManagerId = projectEntity.ProjectManagerId,
-        ServiceId = projectEntity.ServiceId
-    };
+        return new Project
+        {
+            ProjectNumber = projectEntity.ProjectNumber,
+            ProjectName = projectEntity.ProjectName,
+            StartDate = projectEntity.StartDate,
+            EndDate = projectEntity.EndDate,
+            Status = projectEntity.Status,
+            TotalPrice = projectEntity.TotalPrice,
+            CustomerId = projectEntity.CustomerId,
+            ProjectManagerId = projectEntity.ProjectManagerId,
+            ServiceId = projectEntity.ServiceId
+        };
+    }
 
     // GitHub Copilot helped me with this method so that the user can update the fields if they want to.
     // If the fields are left blank then the original values will be used.

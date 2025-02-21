@@ -3,7 +3,7 @@ using Business.Factories;
 using Business.Interfaces;
 using Business.Models;
 using Data.Interfaces;
-using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace Business.Services;
 
@@ -51,8 +51,27 @@ public class ProjectService(IProjectRepository projectRepository) : IProjectServ
     // Read all projects
     public async Task<IEnumerable<Project>?> GetAllProjectsAsync()
     {
+        Debug.WriteLine("GetAllProjectsAsync called");
         var projectEntities = await _projectRepository.GetAllAsync();
-        var projects = projectEntities?.Select(ProjectFactory.CreateModel);
+        if (projectEntities == null)
+        {
+            Debug.WriteLine("No project entities found in the database");
+            return null;
+        }
+
+        Debug.WriteLine($"Number of project entities retrieved: {projectEntities.Count()}");
+        foreach (var projectEntity in projectEntities)
+        {
+            Debug.WriteLine($"ProjectEntity: {projectEntity.ProjectNumber}, CustomerId: {projectEntity.CustomerId}");
+        }
+
+        var projects = projectEntities.Select(ProjectFactory.CreateModel);
+        Debug.WriteLine($"Number of projects created: {projects.Count()}");
+        foreach (var project in projects)
+        {
+            Debug.WriteLine($"Project: {project.ProjectNumber}, CustomerId: {project.CustomerId}");
+        }
+
         return projects;
     }
 

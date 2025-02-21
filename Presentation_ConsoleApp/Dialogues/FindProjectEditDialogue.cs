@@ -22,11 +22,16 @@ public class FindProjectEditDialogue
             Console.Clear();
             Console.WriteLine("---------- FIND PROJECT TO EDIT ----------");
             Console.WriteLine("Enter the project number you are looking for in format P-000 (Or type M to return to the main menu):");
-            var projectNumber = Console.ReadLine()!;
+            var input = Console.ReadLine()!;
 
-            if (!string.IsNullOrEmpty(projectNumber))
+            if (input.ToUpper() == "M")
             {
-                var project = await _projectService.GetProjectByNumberAsync(projectNumber);
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                var project = await _projectService.GetProjectByNumberAsync(input);
                 if (project != null)
                 {
                     Console.WriteLine($"Project found: {project.ProjectNumber}, {project.ProjectName}");

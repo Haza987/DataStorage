@@ -18,11 +18,11 @@ public class EditChoiceDialogue(FindCustomerEditDialogue findCustomerDialogue, F
         switch (option)
         {
             case "1":
-                await _findCustomerDialogue.FindCustomer(true);
+                await _findProjectDialogue.FindProject(true);
                 break;
 
             case "2":
-                await _findProjectDialogue.FindProject(true);
+                await _findCustomerDialogue.FindCustomer(true);
                 break;
 
             case "3":

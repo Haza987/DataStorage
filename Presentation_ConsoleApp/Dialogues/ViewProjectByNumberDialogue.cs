@@ -43,8 +43,8 @@ public class ViewProjectByNumberDialogue(IProjectService projectService, ICustom
             else
             {
                 Console.WriteLine("Project not found.");
-                Console.ReadKey();
             }
+                Console.ReadKey();
         }
         else
         {

@@ -25,6 +25,7 @@ public class ViewAllCustomers(ICustomerService customerService)
     {
         Console.Clear();
         Console.WriteLine("----- VIEW CUSTOMERS -----");
+        Console.WriteLine("-------------------------------");
         if (customers.Any())
         {
             foreach (var customer in customers)
